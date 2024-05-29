@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider appearance={{ variables: { colorPrimary: "#624cf5" } }}>
       <html lang="en">
         {/* antialiased is a TailwindCSS class that applies font-smoothing to the text */}
         <body className={cn("font-IBMPlex antialiased", IBMPlexFont.variable)}>
