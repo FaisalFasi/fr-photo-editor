@@ -13,6 +13,7 @@ const isProtectedRoute = createRouteMatcher([
   // so it will match /home, /home/1, /home/2, /home/3, etc.
   // and /dashboard, /dashboard/1, /dashboard/2, /dashboard/3, etc.
 ]);
+// const isPublicRoute = createRouteMatcher(["/api/webhooks/clerk"]);
 
 export default clerkMiddleware((auth, req) => {
   if (!auth().userId && isProtectedRoute(req)) {
