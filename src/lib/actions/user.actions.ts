@@ -1,19 +1,17 @@
 "use server";
-
 import { revalidatePath } from "next/cache";
-
-import User from "../models/user.model";
-
 import { connectToDatabase } from "../database/mongoose";
 import { handleError } from "../utils";
+import User from "../models/user.model";
 
 // CREATE
 export async function createUser(user: CreateUserParams) {
   try {
-    // Connect to database and create user document in the User collection using the provided user object. The user object is passed to the create method, which returns a promise that resolves to the newly created user document.
     await connectToDatabase();
 
     const newUser = await User.create(user);
+
+    console.log("New User created:  ", newUser);
 
     return JSON.parse(JSON.stringify(newUser));
   } catch (error) {
@@ -29,6 +27,7 @@ export async function getUserById(userId: string) {
     const user = await User.findOne({ clerkId: userId });
 
     if (!user) throw new Error("User not found");
+    console.log("User found:  ", user);
 
     return JSON.parse(JSON.stringify(user));
   } catch (error) {

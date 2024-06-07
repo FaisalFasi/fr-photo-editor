@@ -1,7 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 const isProtectedRoute = createRouteMatcher([
-  "/",
   "/profile",
   "/settings",
   "/home(.*)",
@@ -13,9 +12,13 @@ const isProtectedRoute = createRouteMatcher([
   // so it will match /home, /home/1, /home/2, /home/3, etc.
   // and /dashboard, /dashboard/1, /dashboard/2, /dashboard/3, etc.
 ]);
-// const isPublicRoute = createRouteMatcher(["/api/webhooks/clerk"]);
+
+const isPublicRoute = createRouteMatcher(["/api/webhooks/clerk"]);
 
 export default clerkMiddleware((auth, req) => {
+  if (isPublicRoute(req)) {
+    ignoredRoutes: ["/api/webhooks(.*)"];
+  }
   if (!auth().userId && isProtectedRoute(req)) {
     // Add custom logic to run before redirecting
 

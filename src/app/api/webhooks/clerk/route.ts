@@ -38,6 +38,7 @@ export async function POST(req: Request) {
   // Create a new Svix instance with your secret.
   const wh = new Webhook(WEBHOOK_SECRET);
 
+  // Verify the webhook event and cast it to a WebhookEvent type for TypeScript support and intellisense in your editor.
   let evt: WebhookEvent;
 
   // Verify the payload with the headers
@@ -66,24 +67,26 @@ export async function POST(req: Request) {
     const user = {
       clerkId: id,
       email: email_addresses[0].email_address,
+      // implies ¡ is used to assert that the value is not null or undefined and can be safely accessed without throwing an error
       username: username!,
-      firstName: first_name,
-      lastName: last_name,
+      // double question marks ?? is used to provide a default value if the value is null or undefined
+      firstName: first_name ?? "",
+      lastName: last_name ?? "",
       photo: image_url,
     };
 
-    // const newUser = await createUser(user: );
+    const newUser = await createUser(user);
 
     // Set public metadata
-    // if (newUser) {
-    //   await clerkClient.users.updateUserMetadata(id, {
-    //     publicMetadata: {
-    //       userId: newUser._id,
-    //     },
-    //   });
-    // }
+    if (newUser) {
+      await clerkClient.users.updateUserMetadata(id, {
+        publicMetadata: {
+          userId: newUser._id,
+        },
+      });
+    }
 
-    // return NextResponse.json({ message: "OK", user: newUser });
+    return NextResponse.json({ message: "OK", user: newUser });
   }
 
   // UPDATE
@@ -91,15 +94,15 @@ export async function POST(req: Request) {
     const { id, image_url, first_name, last_name, username } = evt.data;
 
     const user = {
-      firstName: first_name,
-      lastName: last_name,
+      firstName: first_name ?? "",
+      lastName: last_name ?? "",
       username: username!,
       photo: image_url,
     };
 
-    // const updatedUser = await updateUser(id, user);
+    const updatedUser = await updateUser(id, user);
 
-    // return NextResponse.json({ message: "OK", user: updatedUser });
+    return NextResponse.json({ message: "OK", user: updatedUser });
   }
 
   // DELETE

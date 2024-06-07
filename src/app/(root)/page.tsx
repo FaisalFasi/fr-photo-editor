@@ -1,4 +1,5 @@
 import { UserButton } from "@clerk/nextjs";
+import mongoose from "mongoose";
 import React from "react";
 
 const Home = () => {
