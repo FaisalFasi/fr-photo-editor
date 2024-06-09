@@ -12,6 +12,11 @@ export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
+  console.log(
+    "Testing Routes --------------------------------------------------------- "
+  );
+  console.log("WEBHOOK_SECRET: ", WEBHOOK_SECRET);
+
   if (!WEBHOOK_SECRET) {
     throw new Error(
       "Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local"
@@ -57,12 +62,15 @@ export async function POST(req: Request) {
   // Get the ID and type
   const { id } = evt.data;
   const eventType = evt.type;
+  console.log("Event Type: ", eventType);
+  console.log("Event id: ", id);
 
   // CREATE
   if (eventType === "user.created") {
     const { id, email_addresses, image_url, first_name, last_name, username } =
       evt.data;
-
+    console.log("User created:---------------------- ");
+    console.log("User created: ", evt.data);
     const user = {
       clerkId: id,
       email: email_addresses[0].email_address,

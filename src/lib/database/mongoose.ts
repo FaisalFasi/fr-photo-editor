@@ -1,12 +1,13 @@
 import mongoose, { Mongoose } from "mongoose";
 
 const MONGODB_URL = process.env.MONGODB_URL;
+console.log("MONGODB_URL: ---------------------- ", MONGODB_URL);
 
 //  MongooseConnection is a type that defines the structure of the cached object.
+// conn: Stores the Mongoose connection object.
+//   promise: Stores the promise returned by mongoose.connect. This ensures that the connection is only established once.
 interface MongooseConnection {
-  // conn: Stores the Mongoose connection object.
   conn: Mongoose | null;
-  //   promise: Stores the promise returned by mongoose.connect. This ensures that the connection is only established once.
   promise: Promise<Mongoose> | null;
 }
 
@@ -37,6 +38,7 @@ export const connectToDatabase = async () => {
     mongoose.connect(MONGODB_URL, {
       dbName: "AI-Photo-Editor",
       bufferCommands: false,
+      connectTimeoutMS: 30000, // Give up initial connection after 10 seconds
       // bufferCommands: false disables mongoose buffering. This can help prevent memory leaks in long-running applications.
     });
   console.log("Connected to database");
