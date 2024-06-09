@@ -36,7 +36,7 @@ export const connectToDatabase = async () => {
   cached.promise =
     cached.promise ||
     mongoose.connect(MONGODB_URL, {
-      dbName: "AI-Photo-Editor",
+      dbName: "ai-phot-editor",
       bufferCommands: false,
       connectTimeoutMS: 30000, // Give up initial connection after 10 seconds
       // bufferCommands: false disables mongoose buffering. This can help prevent memory leaks in long-running applications.
