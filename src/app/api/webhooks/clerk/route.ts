@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-// import { clerkClient } from "@clerk/nextjs";
 import { clerkClient } from "@clerk/nextjs/server";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
@@ -11,11 +10,6 @@ import { createUser, deleteUser, updateUser } from "@/lib/actions/user.actions";
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
-
-  console.log(
-    "Testing Routes --------------------------------------------------------- "
-  );
-  console.log("WEBHOOK_SECRET: ", WEBHOOK_SECRET);
 
   if (!WEBHOOK_SECRET) {
     throw new Error(
@@ -62,32 +56,25 @@ export async function POST(req: Request) {
   // Get the ID and type
   const { id } = evt.data;
   const eventType = evt.type;
-  console.log("Event Type: ", eventType);
-  console.log("Event id: ", id);
 
+  console.log("Webhook event type:", eventType);
   // CREATE
   if (eventType === "user.created") {
     const { id, email_addresses, image_url, first_name, last_name, username } =
       evt.data;
-    console.log("User created:---------------------- ");
-    console.log("User created: ", evt.data);
-
-    // Check if username is provided
-    if (!username) {
-      throw new Error("Username is required");
-    }
 
     const user = {
       clerkId: id,
       email: email_addresses[0].email_address,
-      username: username,
+      username: username!,
       firstName: first_name,
       lastName: last_name,
       photo: image_url,
     };
-
+    console.log("user: ", user);
     const newUser = await createUser(user);
 
+    console.log("newUser: ", newUser);
     // Set public metadata
     if (newUser) {
       await clerkClient.users.updateUserMetadata(id, {
