@@ -34,6 +34,7 @@ import { AspectRatioKey, debounce, deepMergeObjects } from "@/lib/utils";
 import { set } from "mongoose";
 import { updateCredits } from "@/lib/actions/user.actions";
 import MediaUploader from "./MediaUploader";
+import TransformedImage from "./TransformedImage";
 
 export const formSchema = z.object({
   title: z.string(),
@@ -246,6 +247,15 @@ const TransformationForm = ({
             )}
           />
         </div>
+
+        {/* <TransformedImage
+          image={image}
+          type={type}
+          title={form.getValues().title}
+          isTransforming={isTransforming}
+          setIsTransforming={setIsTransforming}
+          transformationConfig={transformationConfig}
+        /> */}
 
         <div className="flex flex-col gap-4">
           <Button
