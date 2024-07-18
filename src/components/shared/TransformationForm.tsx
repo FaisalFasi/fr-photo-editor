@@ -35,6 +35,9 @@ import { set } from "mongoose";
 import { updateCredits } from "@/lib/actions/user.actions";
 import MediaUploader from "./MediaUploader";
 import TransformedImage from "./TransformedImage";
+import { getCldImageUrl } from "next-cloudinary";
+import { addImage, updateImage } from "@/lib/actions/image.actions";
+import { useRouter } from "next/navigation";
 
 export const formSchema = z.object({
   title: z.string(),
@@ -53,6 +56,7 @@ const TransformationForm = ({
   config = null,
 }: TransformationFormProps) => {
   const transformationType = transformationTypes[type];
+  const router = useRouter();
 
   const [image, setImage] = useState(data);
   const [newTransformation, setNewTransformation] =
@@ -85,7 +89,63 @@ const TransformationForm = ({
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
+    if (data || image) {
+      const transformationUrl = getCldImageUrl({
+        width: image?.width,
+        height: image?.height,
+        src: image?.publicId,
+        ...transformationConfig,
+      });
+      const imageData = {
+        title: values.title,
+        publicId: image?.publicId,
+        transformationType: type,
+        width: image?.width,
+        height: image?.height,
+        config: transformationConfig,
+        secureURL: transformationUrl,
+        transformationURL: transformationUrl,
+        aspectRatio: values.aspectRatio,
+        prompt: values.prompt,
+        color: values.color,
+      };
+      if (action === "Add") {
+        try {
+          const newImage = await addImage({
+            image: imageData,
+            userId,
+            path: "/",
+          });
+          if (newImage) {
+            form.reset();
+            setImage(data);
+            router.push(`/transformations/${newImage._id}`);
+          }
+        } catch (error) {
+          console.error("error in image actions occured", error);
+        }
+      }
+
+      if (action === "Update") {
+        // update image
+        try {
+          const newImage = await updateImage({
+            image: { ...imageData, _id: data._id },
+            userId,
+            path: "/",
+          });
+          if (newImage) {
+            form.reset();
+            setImage(data);
+            router.push(`/transformations/${newImage._id}`);
+          }
+        } catch (error) {
+          console.error("error in image actions occured", error);
+        }
+      }
+    }
     console.log(values);
   }
 
@@ -138,6 +198,8 @@ const TransformationForm = ({
     setNewTransformation(null);
 
     startTransition(async () => {
+      await updateCredits(userId, -1);
+
       // await updateCredits(userId, creditBalance - creditFee);
     });
   };
@@ -246,16 +308,17 @@ const TransformationForm = ({
               />
             )}
           />
+          {
+            <TransformedImage
+              image={image}
+              type={type}
+              title={form.getValues().title}
+              isTransforming={isTransforming}
+              setIsTransforming={setIsTransforming}
+              transformationConfig={transformationConfig}
+            />
+          }
         </div>
-
-        {/* <TransformedImage
-          image={image}
-          type={type}
-          title={form.getValues().title}
-          isTransforming={isTransforming}
-          setIsTransforming={setIsTransforming}
-          transformationConfig={transformationConfig}
-        /> */}
 
         <div className="flex flex-col gap-4">
           <Button
