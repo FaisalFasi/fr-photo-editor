@@ -39,7 +39,7 @@ const TransformedImage = ({
             width={getImageSize(type, image, "width")}
             height={getImageSize(type, image, "height")}
             src={image?.publicId}
-            alt={image.title}
+            alt={title ? `Transformed image: ${title}` : "Transformed image"}
             sizes="(max-width: 767px) 100vw, 50vw"
             placeholder={dataUrl as PlaceholderValue}
             className="transformed-image"
@@ -58,7 +58,7 @@ const TransformedImage = ({
           {isTransforming && (
             <div>
               <Image
-                src={"assets/icons/spinner.svg"}
+                src={"/assets/icons/spinner.svg"}
                 width={50}
                 height={50}
                 alt="transforming"

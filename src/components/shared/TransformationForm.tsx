@@ -1,5 +1,5 @@
 "use client";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { any, z } from "zod";
@@ -38,6 +38,7 @@ import TransformedImage from "./TransformedImage";
 import { getCldImageUrl } from "next-cloudinary";
 import { addImage, updateImage } from "@/lib/actions/image.actions";
 import { useRouter } from "next/navigation";
+import { InsufficientCreditsModal } from "./InsufficientCreditsModal";
 
 export const formSchema = z.object({
   title: z.string(),
@@ -49,11 +50,11 @@ export const formSchema = z.object({
 
 const TransformationForm = ({
   action,
-  data = null,
+  data,
   userId,
   type,
   creditBalance,
-  config = null,
+  config,
 }: TransformationFormProps) => {
   const transformationType = transformationTypes[type];
   const router = useRouter();
@@ -65,7 +66,9 @@ const TransformationForm = ({
   // for submitbutton declaration
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTransforming, setIsTransforming] = useState(false);
-  const [transformationConfig, setTransformationConfig] = useState(config);
+  // const [transformationConfig, setTransformationConfig] = useState(config);
+  const [transformationConfig, setTransformationConfig] =
+    useState<Transformations | null>(config ?? null);
 
   // end for submitbutton
 
@@ -105,12 +108,14 @@ const TransformationForm = ({
         width: image?.width,
         height: image?.height,
         config: transformationConfig,
-        secureURL: transformationUrl,
+        secureURL: image?.secureURL,
+        // secureURL: transformationUrl,
         transformationURL: transformationUrl,
         aspectRatio: values.aspectRatio,
         prompt: values.prompt,
         color: values.color,
       };
+      // add image
       if (action === "Add") {
         try {
           const newImage = await addImage({
@@ -131,26 +136,27 @@ const TransformationForm = ({
       if (action === "Update") {
         // update image
         try {
-          const newImage = await updateImage({
+          const updatedImage = await updateImage({
             image: { ...imageData, _id: data._id },
             userId,
-            path: "/",
+            path: `/transformations${data._id}`,
           });
-          if (newImage) {
-            form.reset();
-            setImage(data);
-            router.push(`/transformations/${newImage._id}`);
+          if (updatedImage) {
+            router.push(`/transformations/${updatedImage._id}`);
           }
         } catch (error) {
-          console.error("error in image actions occured", error);
+          console.error("error in image update actions occured", error);
         }
       }
     }
     console.log(values);
+    setIsSubmitting(false);
   }
 
   // 3. Define your form fields.
   // -------  on select aspect ratio field change handler ---------
+  // onSelectFieldHandler function is used to handle the select field change event and update the image aspect ratio  and size based on the selected value from the dropdown
+
   const onSelectFieldHandler = (
     value: string,
     onChangeField: (value: string) => void
@@ -194,20 +200,30 @@ const TransformationForm = ({
   // ------ Transform image input change handler ---------
   const onTransformHandler = async () => {
     setIsTransforming(true);
-    deepMergeObjects(newTransformation, transformationConfig);
+    setTransformationConfig(
+      deepMergeObjects(newTransformation, transformationConfig)
+    );
     setNewTransformation(null);
 
     startTransition(async () => {
-      await updateCredits(userId, -1);
+      await updateCredits(userId, creditFee);
 
       // await updateCredits(userId, creditBalance - creditFee);
     });
   };
   // ------ Transform image input change handler ends here ---------
 
+  useEffect(() => {
+    if (image && (type === "restore" || type === "removeBackground")) {
+      setNewTransformation(transformationType.config);
+    }
+  }, [image, transformationType.config, type]);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {creditBalance < Math.abs(creditFee) && <InsufficientCreditsModal />}
+
         <CustomField
           control={form.control}
           name="title"
