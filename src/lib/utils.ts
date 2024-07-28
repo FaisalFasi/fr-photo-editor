@@ -115,9 +115,11 @@ export const download = (url: string, filename: string) => {
     throw new Error("Resource URL not provided! You need to provide one");
   }
 
+  // fetching the image data through url & blob contains the image data
   fetch(url)
     .then((response) => response.blob())
     .then((blob) => {
+      // creating a URL for the blob data & creating an anchor tag to download the image
       const blobURL = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = blobURL;
