@@ -1,6 +1,4 @@
 import { navLinks } from "@/constants";
-import { UserButton } from "@clerk/nextjs";
-import mongoose from "mongoose";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
