@@ -3,6 +3,7 @@ import { IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
+import CSP from "@/components/shared/CSP";
 
 // This is a custom font that we're loading from Google Fonts using the next/font plugin for Next.js
 const IBMPlexFont = IBM_Plex_Sans({
@@ -23,8 +24,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider appearance={{ variables: { colorPrimary: "#624cf5" } }}>
+    <ClerkProvider
+      signInForceRedirectUrl={"/"}
+      appearance={{ variables: { colorPrimary: "#624cf5" } }}
+    >
       <html lang="en">
+        <CSP />
         {/* antialiased is a TailwindCSS class that applies font-smoothing to the text */}
         <body className={cn("font-IBMPlex antialiased", IBMPlexFont.variable)}>
           {/* IBMPlexFont.variable will apply the actual fonts */}

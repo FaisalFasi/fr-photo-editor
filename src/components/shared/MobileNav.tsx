@@ -13,6 +13,7 @@ const MobileNav = () => {
     <header className="header">
       <Link href="/" className="flex items-center gap-2 md:py-2">
         <Image
+          className="w-[180px] h-auto"
           src={"/assets/cutom-imgs/logo-new.png"}
           alt="logo"
           width={180}
@@ -35,6 +36,7 @@ const MobileNav = () => {
             <SheetContent className="sheet-content sm:w-64 overflow-y-scroll">
               <>
                 <Image
+                  className="w-[152px] h-auto"
                   src={"/assets/cutom-imgs/logo-new.png"}
                   alt="logo"
                   width={152}

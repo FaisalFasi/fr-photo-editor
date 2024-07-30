@@ -13,14 +13,14 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware((auth, req) => {
-  if (isPublicRoute(req)) {
-    return;
-  }
-  // if (isProtectedRoute(req)) auth().protect();
+  // if (isPublicRoute(req)) {
+  //   return;
+  // }
+  if (isProtectedRoute(req)) auth().protect();
 
-  if (!auth().userId && isProtectedRoute(req)) {
-    return auth().redirectToSignIn();
-  }
+  // if (!auth().userId && isProtectedRoute(req)) {
+  //   return auth().redirectToSignIn();
+  // }
 });
 
 export const config = {

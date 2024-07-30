@@ -38,6 +38,7 @@ export const Search = () => {
   return (
     <div className="search">
       <Image
+        className="w-[24px] h-[24px]"
         src="/assets/icons/search.svg"
         alt="search"
         width={24}

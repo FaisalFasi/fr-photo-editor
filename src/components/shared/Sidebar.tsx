@@ -16,6 +16,7 @@ const Sidebar = () => {
         {/* logo */}
         <Link href="/" className="sidebar-logo">
           <Image
+            className="w-[200px] h-auto"
             src={"/assets/cutom-imgs/logo-new.png"}
             // src={logo}
             alt="logo"
