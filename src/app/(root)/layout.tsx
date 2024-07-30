@@ -7,15 +7,15 @@ import ErrorBoundary from "@/components/shared/ErrorBoundary";
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <main className="root">
-      <ErrorBoundary>
-        <Sidebar />
-        {<MobileNav />}
+      {/* <ErrorBoundary> */}
+      <Sidebar />
+      {<MobileNav />}
 
-        <div className="root-container">
-          <div className="wrapper">{children}</div>
-        </div>
-        <Toaster />
-      </ErrorBoundary>
+      <div className="root-container">
+        <div className="wrapper">{children}</div>
+      </div>
+      <Toaster />
+      {/* </ErrorBoundary> */}
     </main>
   );
 };

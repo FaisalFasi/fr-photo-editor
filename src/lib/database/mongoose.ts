@@ -1,6 +1,6 @@
 import mongoose, { Mongoose } from "mongoose";
 
-const MONGODB_URL = process.env.NEXT_MONGODB_URL;
+const MONGODB_URL = process.env.MONGODB_URL;
 console.log("MONGODB_URL: ---------------------- ", MONGODB_URL);
 
 //  MongooseConnection is a type that defines the structure of the cached object.

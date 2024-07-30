@@ -94,7 +94,7 @@ export async function getImageById(imageId: string) {
     handleError(error);
   }
 }
-// GET IMAGES
+// GET ALL IMAGES
 export async function getAllImages({
   limit = 9,
   page = 1,
@@ -108,9 +108,9 @@ export async function getAllImages({
     await connectToDatabase();
 
     cloudinary.config({
-      cloud_name: process.env.NEXT_CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.NEXT_CLOUDINARY_API_KEY,
-      api_secret: process.env.NEXT_CLOUDINARY_API_SECRET,
+      cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
       secure: true,
     });
 
@@ -153,6 +153,37 @@ export async function getAllImages({
     };
   } catch (error) {
     console.error("error in image actions occured", error);
+    handleError(error);
+  }
+}
+
+// GET IMAGES BY USER
+export async function getUserImages({
+  limit = 9,
+  page = 1,
+  userId,
+}: {
+  limit?: number;
+  page: number;
+  userId: string;
+}) {
+  try {
+    await connectToDatabase();
+
+    const skipAmount = (Number(page) - 1) * limit;
+
+    const images = await populateUser(Image.find({ author: userId }))
+      .sort({ updatedAt: -1 })
+      .skip(skipAmount)
+      .limit(limit);
+
+    const totalImages = await Image.find({ author: userId }).countDocuments();
+
+    return {
+      data: JSON.parse(JSON.stringify(images)),
+      totalPages: Math.ceil(totalImages / limit),
+    };
+  } catch (error) {
     handleError(error);
   }
 }
