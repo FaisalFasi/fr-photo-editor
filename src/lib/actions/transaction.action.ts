@@ -39,7 +39,7 @@ export async function checkoutCredits(transaction: CheckoutTransactionParams) {
 }
 
 // create a transaction
-export async function createTransection(transaction: CreateTransactionParams) {
+export async function createTransaction(transaction: CreateTransactionParams) {
   // create a transaction
 
   try {

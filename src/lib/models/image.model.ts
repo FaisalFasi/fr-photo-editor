@@ -1,5 +1,4 @@
 import { Document, Schema, model, models } from "mongoose";
-import { string } from "zod";
 
 export interface IImage extends Document {
   title: string;
@@ -13,13 +12,13 @@ export interface IImage extends Document {
   aspectRatio?: string;
   color?: string;
   prompt?: string;
-  author?: {
+  author: {
     _id: string;
     firstName: string;
     lastName: string;
   };
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 const ImageSchema = new Schema({
