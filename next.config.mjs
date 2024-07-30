@@ -1,5 +1,28 @@
+const cspHeader = `
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://flowing-rattler-60.clerk.accounts.dev https://challenges.cloudflare.com;
+  connect-src 'self' https://flowing-rattler-60.clerk.accounts.dev;
+  img-src 'self' https://img.clerk.com https://res.cloudinary.com;
+  worker-src 'self' blob:;
+  style-src 'self' 'unsafe-inline';
+  frame-src 'self' https://challenges.cloudflare.com;
+`;
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value: cspHeader.replace(/\n/g, ""),
+          },
+        ],
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
