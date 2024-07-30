@@ -25,6 +25,7 @@ export default function RootLayout({
   return (
     <ClerkProvider
       signInForceRedirectUrl={"/"}
+      signUpForceRedirectUrl={"/"}
       appearance={{ variables: { colorPrimary: "#624cf5" } }}
     >
       <html lang="en">
