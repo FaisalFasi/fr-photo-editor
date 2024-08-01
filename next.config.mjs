@@ -23,7 +23,7 @@ export default nextConfig;
 //   frame-src 'self' https://challenges.cloudflare.com;
 // `;
 
-// /** @type {import('next').NextConfig} */
+// // /** @type {import('next').NextConfig} */
 // const nextConfig = {
 //   async headers() {
 //     return [
@@ -38,6 +38,26 @@ export default nextConfig;
 //       },
 //     ];
 //   },
+//   images: {
+//     remotePatterns: [
+//       {
+//         protocol: "https",
+//         hostname: "res.cloudinary.com",
+//         port: "",
+//       },
+//       {
+//         protocol: "https",
+//         hostname: "img.clerk.com",
+//         port: "",
+//       },
+//     ],
+//   },
+// };
+
+// export default nextConfig;
+
+// /** @type {import('next').NextConfig} */
+// const nextConfig = {
 //   images: {
 //     remotePatterns: [
 //       {
