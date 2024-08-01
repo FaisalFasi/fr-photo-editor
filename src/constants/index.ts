@@ -71,11 +71,11 @@ export const plans = [
     _id: 2,
     name: "Pro Package",
     icon: "/assets/icons/free-plan.svg",
-    price: 40,
-    credits: 120,
+    price: 5,
+    credits: 50,
     inclusions: [
       {
-        label: "120 Credits",
+        label: "50 Credits",
         isIncluded: true,
       },
       {
@@ -96,11 +96,11 @@ export const plans = [
     _id: 3,
     name: "Premium Package",
     icon: "/assets/icons/free-plan.svg",
-    price: 199,
-    credits: 2000,
+    price: 14.99,
+    credits: 200,
     inclusions: [
       {
-        label: "2000 Credits",
+        label: "200 Credits",
         isIncluded: true,
       },
       {
@@ -190,4 +190,4 @@ export const defaultValues = {
   publicId: "",
 };
 
-export const creditFee = -1;
+export const creditFee = -10;
