@@ -69,9 +69,9 @@ export const plans = [
   },
   {
     _id: 2,
-    name: "Pro Package",
+    name: "Basic Package",
     icon: "/assets/icons/free-plan.svg",
-    price: 5,
+    price: 4.99,
     credits: 50,
     inclusions: [
       {
@@ -94,13 +94,38 @@ export const plans = [
   },
   {
     _id: 3,
-    name: "Premium Package",
+    name: "Pro Package",
     icon: "/assets/icons/free-plan.svg",
     price: 14.99,
-    credits: 200,
+    credits: 170,
     inclusions: [
       {
-        label: "200 Credits",
+        label: "170 Credits",
+        isIncluded: true,
+      },
+      {
+        label: "Full Access to Services",
+        isIncluded: true,
+      },
+      {
+        label: "Priority Customer Support",
+        isIncluded: true,
+      },
+      {
+        label: "Priority Updates",
+        isIncluded: true,
+      },
+    ],
+  },
+  {
+    _id: 4,
+    name: "Premium Package",
+    icon: "/assets/icons/free-plan.svg",
+    price: 49.99,
+    credits: 600,
+    inclusions: [
+      {
+        label: "600 Credits",
         isIncluded: true,
       },
       {
