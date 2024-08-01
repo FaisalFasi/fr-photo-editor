@@ -57,12 +57,8 @@ export async function POST(req: Request) {
   const { id } = evt.data;
   const eventType = evt.type;
 
-  console.log("Webhook event type:", eventType);
-
   // CREATE
   if (eventType === "user.created") {
-    console.log("user has been created -----------------");
-
     const { id, email_addresses, image_url, first_name, last_name, username } =
       evt.data;
 
@@ -76,8 +72,6 @@ export async function POST(req: Request) {
     };
 
     const newUser = await createUser(user);
-
-    console.log("newUser: ", newUser);
 
     // Set public metadata
     if (newUser) {

@@ -149,7 +149,6 @@ const TransformationForm = ({
         }
       }
     }
-    console.log(values);
     setIsSubmitting(false);
   }
 

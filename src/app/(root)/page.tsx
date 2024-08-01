@@ -10,9 +10,6 @@ const Home = async ({ searchParams }: SearchParamProps) => {
   const searchQuery = (searchParams?.query as string) || "";
   const images = await getAllImages({ page, searchQuery });
 
-  console.log("images");
-  console.log("-----------------");
-
   return (
     <div>
       <section className="home">

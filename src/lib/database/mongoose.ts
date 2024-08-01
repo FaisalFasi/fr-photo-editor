@@ -1,7 +1,6 @@
 import mongoose, { Mongoose } from "mongoose";
 
 const MONGODB_URL = process.env.MONGODB_URL;
-console.log("MONGODB_URL: ---------------------- ", MONGODB_URL);
 
 //  MongooseConnection is a type that defines the structure of the cached object.
 // conn: Stores the Mongoose connection object.
@@ -21,10 +20,6 @@ if (!cached) {
 
 // This function handles the connection logic. It first checks if a connection already exists. If it does, it returns the existing connection. If not, it establishes a new connection using the MONGODB_URL environment variable.
 export const connectToDatabase = async () => {
-  console.log("MONGODB_URL: ", MONGODB_URL);
-  console.log("cached.conn: ", cached.conn);
-  console.log("cached.promise: ", cached.promise);
-
   if (cached.conn) return cached.conn;
 
   if (!MONGODB_URL)
@@ -41,7 +36,6 @@ export const connectToDatabase = async () => {
       connectTimeoutMS: 30000, // Give up initial connection after 10 seconds
       // bufferCommands: false disables mongoose buffering. This can help prevent memory leaks in long-running applications.
     });
-  console.log("Connected to database");
 
   cached.conn = await cached.promise;
 
