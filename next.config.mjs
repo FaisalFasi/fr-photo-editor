@@ -5,10 +5,10 @@ const cspHeader = `
   img-src 'self' https://img.clerk.com https://res.cloudinary.com;
   worker-src 'self' blob:;
   style-src 'self' 'unsafe-inline';
-  frame-src 'self' https://challenges.cloudflare.com;
+  frame-src 'self' https://challenges.cloudflare.com https://upload-widget.cloudinary.com;
 `;
 
-// /** @type {import('next').NextConfig} */
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   async headers() {
     return [
@@ -40,23 +40,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-
-// /** @type {import('next').NextConfig} */
-// const nextConfig = {
-//   images: {
-//     remotePatterns: [
-//       {
-//         protocol: "https",
-//         hostname: "res.cloudinary.com",
-//         port: "",
-//       },
-//       {
-//         protocol: "https",
-//         hostname: "img.clerk.com",
-//         port: "",
-//       },
-//     ],
-//   },
-// };
-
-// export default nextConfig;
