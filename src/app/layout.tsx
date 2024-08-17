@@ -24,21 +24,17 @@ export default function RootLayout({
 }>) {
   {
     /* antialiased is a TailwindCSS class that applies font-smoothing to the text */
-  }
-  {
     /* IBMPlexFont.variable will apply the actual fonts */
   }
   return (
     <ClerkProvider appearance={{ variables: { colorPrimary: "#624cf5" } }}>
-      <ClerkLoaded>
-        <html lang="en">
-          <body
-            className={cn("font-IBMPlex antialiased", IBMPlexFont.variable)}
-          >
-            {children}
-          </body>
-        </html>
-      </ClerkLoaded>
+      {/* <ClerkLoaded> */}
+      <html lang="en">
+        <body className={cn("font-IBMPlex antialiased", IBMPlexFont.variable)}>
+          {children}
+        </body>
+      </html>
+      {/* </ClerkLoaded> */}
     </ClerkProvider>
   );
 }

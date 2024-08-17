@@ -10,7 +10,6 @@ import { Button } from "../ui/button";
 
 const Sidebar = () => {
   const pathname = usePathname();
-  console.log("Path name :", pathname);
 
   return (
     <aside className="sidebar">

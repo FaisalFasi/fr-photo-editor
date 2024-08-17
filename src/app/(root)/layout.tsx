@@ -4,7 +4,6 @@ import MobileNav from "@/components/shared/MobileNav";
 import { Toaster } from "@/components/ui/toaster";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  console.log("Layout children re render");
   return (
     <main className="root">
       <Sidebar />
