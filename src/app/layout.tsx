@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkLoaded, ClerkProvider } from "@clerk/nextjs";
 
 // This is a custom font that we're loading from Google Fonts using the next/font plugin for Next.js
 const IBMPlexFont = IBM_Plex_Sans({
@@ -30,11 +30,15 @@ export default function RootLayout({
   }
   return (
     <ClerkProvider appearance={{ variables: { colorPrimary: "#624cf5" } }}>
-      <html lang="en">
-        <body className={cn("font-IBMPlex antialiased", IBMPlexFont.variable)}>
-          {children}
-        </body>
-      </html>
+      <ClerkLoaded>
+        <html lang="en">
+          <body
+            className={cn("font-IBMPlex antialiased", IBMPlexFont.variable)}
+          >
+            {children}
+          </body>
+        </html>
+      </ClerkLoaded>
     </ClerkProvider>
   );
 }
