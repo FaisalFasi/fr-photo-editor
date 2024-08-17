@@ -1,14 +1,16 @@
 "use client";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+
 import { usePathname } from "next/navigation";
 import { navLinks } from "@/constants";
 import { Button } from "../ui/button";
 
 const Sidebar = () => {
   const pathname = usePathname();
+  console.log("Path name :", pathname);
 
   return (
     <aside className="sidebar">
@@ -18,7 +20,6 @@ const Sidebar = () => {
           <Image
             className="w-[200px] h-auto"
             src={"/assets/cutom-imgs/logo-new.png"}
-            // src={logo}
             alt="logo"
             priority
             width={200}

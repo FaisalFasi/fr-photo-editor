@@ -57,10 +57,16 @@ export async function POST(req: Request) {
   const { id } = evt.data;
   const eventType = evt.type;
 
+  console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
   // CREATE
   if (eventType === "user.created") {
     const { id, email_addresses, image_url, first_name, last_name, username } =
       evt.data;
+
+    if (!username) {
+      console.error("Username is missing in the webhook payload");
+      return new Response("Error: Username is required", { status: 400 });
+    }
 
     const user = {
       clerkId: id,

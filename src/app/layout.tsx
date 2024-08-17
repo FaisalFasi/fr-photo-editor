@@ -22,19 +22,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  {
+    /* antialiased is a TailwindCSS class that applies font-smoothing to the text */
+  }
+  {
+    /* IBMPlexFont.variable will apply the actual fonts */
+  }
   return (
-    <ClerkProvider
-      signInUrl="/sign-in"
-      signUpUrl="/sign-up"
-      afterSignOutUrl={"/"}
-      signInFallbackRedirectUrl={"/"}
-      signUpFallbackRedirectUrl={"/"}
-      appearance={{ variables: { colorPrimary: "#624cf5" } }}
-    >
+    <ClerkProvider appearance={{ variables: { colorPrimary: "#624cf5" } }}>
       <html lang="en">
-        {/* antialiased is a TailwindCSS class that applies font-smoothing to the text */}
         <body className={cn("font-IBMPlex antialiased", IBMPlexFont.variable)}>
-          {/* IBMPlexFont.variable will apply the actual fonts */}
           {children}
         </body>
       </html>
