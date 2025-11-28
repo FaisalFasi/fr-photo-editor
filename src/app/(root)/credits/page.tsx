@@ -16,6 +16,8 @@ const Credits = async () => {
 
   const user = await getUserById(userId);
 
+  if (!user) redirect("/sign-in");
+
   return (
     <>
       <Header

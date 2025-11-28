@@ -16,9 +16,12 @@ export const Search = () => {
   // Sync query state with URL params when they change externally
   useEffect(() => {
     const urlQuery = searchParams.get("query") || "";
-    if (urlQuery !== query) {
-      setQuery(urlQuery);
-    }
+    setQuery((prevQuery) => {
+      if (urlQuery !== prevQuery) {
+        return urlQuery;
+      }
+      return prevQuery;
+    });
   }, [searchParams]);
 
   useEffect(() => {
