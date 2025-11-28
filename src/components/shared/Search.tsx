@@ -8,13 +8,24 @@ import { Input } from "@/components/ui/input";
 import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 
 export const Search = () => {
-  const [query, setQuery] = useState("");
   const searchParams = useSearchParams();
   const router = useRouter();
+  // Initialize query from URL params
+  const [query, setQuery] = useState(searchParams.get("query") || "");
+
+  // Sync query state with URL params when they change externally
+  useEffect(() => {
+    const urlQuery = searchParams.get("query") || "";
+    if (urlQuery !== query) {
+      setQuery(urlQuery);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      if (query) {
+      const currentQuery = searchParams.get("query") || "";
+      
+      if (query && query !== currentQuery) {
         const newUrl = formUrlQuery({
           searchParams: searchParams.toString(),
           key: "query",
@@ -22,7 +33,7 @@ export const Search = () => {
         });
 
         router.push(newUrl, { scroll: false });
-      } else {
+      } else if (!query && currentQuery) {
         const newUrl = removeKeysFromQuery({
           searchParams: searchParams.toString(),
           keysToRemove: ["query"],
@@ -48,6 +59,7 @@ export const Search = () => {
       <Input
         className="search-field"
         placeholder="Search"
+        value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
     </div>

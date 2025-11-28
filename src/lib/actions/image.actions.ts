@@ -8,6 +8,14 @@ import User from "../models/user.model";
 import Image from "../models/image.model";
 import { v2 as cloudinary } from "cloudinary";
 
+// Initialize Cloudinary config once at module level (runs only once)
+cloudinary.config({
+  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
+
 const populateUser = (query: any) => {
   return query.populate({
     path: "author",
@@ -21,17 +29,20 @@ export async function addImage({ image, userId, path }: AddImageParams) {
   try {
     await connectToDatabase();
 
+    // Check if user exists (don't use lean() here as we need to verify the document)
     const author = await User.findById(userId);
     if (!author) {
       throw new Error("User not found");
     }
+    
     const newImage = await Image.create({
       ...image,
-      author: author._id,
+      author: userId,
     });
 
     revalidatePath(path);
 
+    // Convert Mongoose document to plain object
     return JSON.parse(JSON.stringify(newImage));
   } catch (error) {
     console.error("error in image actions occured", error);
@@ -83,12 +94,12 @@ export async function getImageById(imageId: string) {
   try {
     await connectToDatabase();
 
-    const image = await populateUser(Image.findById(imageId));
+    const image = await populateUser(Image.findById(imageId)).lean();
     if (!image) {
       throw new Error("Image not found");
     }
 
-    return JSON.parse(JSON.stringify(image));
+    return image;
   } catch (error) {
     console.error("error in image actions occured", error);
     handleError(error);
@@ -107,49 +118,39 @@ export async function getAllImages({
   try {
     await connectToDatabase();
 
-    cloudinary.config({
-      cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-      secure: true,
-    });
-
-    let expression = "folder=photoEditor";
-
-    if (searchQuery) {
-      expression += ` AND ${searchQuery}`;
-    }
-
-    const { resources } = await cloudinary.search
-      .expression(expression)
-      .execute();
-
-    const resouceIds = resources.map((resource: any) => resource.public_id);
-
     let query = {};
-    if (searchQuery) {
+
+    // Search in MongoDB using regex for flexible matching (no index required)
+    if (searchQuery && searchQuery.trim()) {
+      // Use regex to search across multiple fields
+      // Case-insensitive search on title, prompt, and transformationType
       query = {
-        publicId: { $in: resouceIds },
+        $or: [
+          { title: { $regex: searchQuery, $options: "i" } }, // Case-insensitive title search
+          { prompt: { $regex: searchQuery, $options: "i" } }, // Case-insensitive prompt search
+          { transformationType: { $regex: searchQuery, $options: "i" } }, // Case-insensitive type search
+        ],
       };
     }
 
     const skipAmount = (Number(page) - 1) * limit;
 
+    // Use lean() for better performance - returns plain JavaScript objects
     const images = await populateUser(Image.find(query))
       .sort({
         createdAt: -1,
       })
       .skip(skipAmount)
-      .limit(limit);
+      .limit(limit)
+      .lean();
 
-    const totalImages = await Image.find(query).countDocuments();
-
-    const savedImages = await Image.find(query).countDocuments();
+    // Execute countDocuments only once (was duplicated before)
+    const totalImages = await Image.countDocuments(query);
 
     return {
-      data: JSON.parse(JSON.stringify(images)),
+      data: images || [],
       totalPage: Math.ceil(totalImages / limit),
-      savedImages,
+      savedImages: totalImages,
     };
   } catch (error) {
     console.error("error in image actions occured", error);
@@ -172,15 +173,17 @@ export async function getUserImages({
 
     const skipAmount = (Number(page) - 1) * limit;
 
+    // Use lean() for better performance
     const images = await populateUser(Image.find({ author: userId }))
       .sort({ updatedAt: -1 })
       .skip(skipAmount)
-      .limit(limit);
+      .limit(limit)
+      .lean();
 
-    const totalImages = await Image.find({ author: userId }).countDocuments();
+    const totalImages = await Image.countDocuments({ author: userId });
 
     return {
-      data: JSON.parse(JSON.stringify(images)),
+      data: images || [],
       totalPages: Math.ceil(totalImages / limit),
     };
   } catch (error) {

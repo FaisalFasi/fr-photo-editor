@@ -38,6 +38,14 @@ const ImageSchema = new Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
+// Add indexes for improved query performance
+ImageSchema.index({ createdAt: -1 }); // For sorting by creation date
+ImageSchema.index({ author: 1 }); // For filtering by author
+ImageSchema.index({ publicId: 1 }); // For searching by publicId
+ImageSchema.index({ publicId: 1, author: 1 }); // Compound index for common query patterns
+// Note: Search uses regex (no index required) - searches title, prompt, and transformationType
+// Text index can be added later if needed for better search performance on large datasets
+
 const Image = models?.Image || model("Image", ImageSchema);
 
 export default Image;

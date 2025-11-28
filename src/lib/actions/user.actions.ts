@@ -22,11 +22,11 @@ export async function getUserById(userId: string) {
   try {
     await connectToDatabase();
 
-    const user = await User.findOne({ clerkId: userId });
+    const user = await User.findOne({ clerkId: userId }).lean();
 
     if (!user) throw new Error("User not found");
 
-    return JSON.parse(JSON.stringify(user));
+    return user;
   } catch (error) {
     handleError(error);
   }
@@ -39,11 +39,11 @@ export async function updateUser(clerkId: string, user: UpdateUserParams) {
 
     const updatedUser = await User.findOneAndUpdate({ clerkId }, user, {
       new: true,
-    });
+    }).lean();
 
     if (!updatedUser) throw new Error("User update failed");
 
-    return JSON.parse(JSON.stringify(updatedUser));
+    return updatedUser;
   } catch (error) {
     handleError(error);
   }
@@ -80,11 +80,11 @@ export async function updateCredits(userId: string, creditFee: number) {
       { _id: userId },
       { $inc: { creditBalance: creditFee } },
       { new: true }
-    );
+    ).lean();
 
     if (!updatedUserCredits) throw new Error("User credits update failed");
 
-    return JSON.parse(JSON.stringify(updatedUserCredits));
+    return updatedUserCredits;
   } catch (error) {
     handleError(error);
   }
