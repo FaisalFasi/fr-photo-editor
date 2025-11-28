@@ -16,15 +16,26 @@ const AddTransformationTypePage = async ({
 
   const user = await getUserById(userId);
 
+  if (!user) redirect("/sign-in");
+
+  // Type guard: ensure user is an object with _id property (not an array)
+  const userObj = Array.isArray(user) ? user[0] : user;
+  if (!userObj || !userObj._id) redirect("/sign-in");
+
+  // Convert _id to string safely
+  const userIdString = typeof userObj._id === 'string' 
+    ? userObj._id 
+    : String(userObj._id);
+
   return (
     <>
       <Header title={transformation.title} subtitle={transformation.subTitle} />
       <section className="mt-10">
         <TransformationForm
           action="Add"
-          userId={user._id}
+          userId={userIdString}
           type={transformation.type as TransformationTypeKey}
-          creditBalance={user.creditBalance}
+          creditBalance={userObj.creditBalance}
         />
       </section>
     </>

@@ -18,6 +18,15 @@ const Credits = async () => {
 
   if (!user) redirect("/sign-in");
 
+  // Type guard: ensure user is an object with _id property (not an array)
+  const userObj = Array.isArray(user) ? user[0] : user;
+  if (!userObj || !userObj._id) redirect("/sign-in");
+
+  // Convert _id to string safely
+  const userIdString = typeof userObj._id === 'string' 
+    ? userObj._id 
+    : String(userObj._id);
+
   return (
     <>
       <Header
@@ -68,7 +77,7 @@ const Credits = async () => {
                     plan={plan.name}
                     amount={plan.price}
                     credits={plan.credits}
-                    buyerId={user._id}
+                    buyerId={userIdString}
                   />
                 </SignedIn>
               )}

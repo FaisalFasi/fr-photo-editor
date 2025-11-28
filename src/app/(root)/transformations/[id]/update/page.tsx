@@ -13,6 +13,18 @@ const Page = async ({ params: { id } }: SearchParamProps) => {
   if (!userId) redirect("/sign-in");
 
   const user = await getUserById(userId);
+  
+  if (!user) redirect("/sign-in");
+
+  // Type guard: ensure user is an object with _id property (not an array)
+  const userObj = Array.isArray(user) ? user[0] : user;
+  if (!userObj || !userObj._id) redirect("/sign-in");
+
+  // Convert _id to string safely
+  const userIdString = typeof userObj._id === 'string' 
+    ? userObj._id 
+    : String(userObj._id);
+
   const image = await getImageById(id);
 
   const transformation =
@@ -25,9 +37,9 @@ const Page = async ({ params: { id } }: SearchParamProps) => {
       <section className="mt-10">
         <TransformationForm
           action="Update"
-          userId={user._id}
+          userId={userIdString}
           type={image.transformationType as TransformationTypeKey}
-          creditBalance={user.creditBalance}
+          creditBalance={userObj.creditBalance}
           config={image.config}
           data={image}
         />

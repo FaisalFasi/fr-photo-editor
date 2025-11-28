@@ -14,7 +14,19 @@ const Profile = async ({ searchParams }: SearchParamProps) => {
   if (!userId) redirect("/sign-in");
 
   const user = await getUserById(userId);
-  const images = await getUserImages({ page, userId: user._id });
+  
+  if (!user) redirect("/sign-in");
+
+  // Type guard: ensure user is an object with _id property (not an array)
+  const userObj = Array.isArray(user) ? user[0] : user;
+  if (!userObj || !userObj._id) redirect("/sign-in");
+
+  // Convert _id to string safely
+  const userIdString = typeof userObj._id === 'string' 
+    ? userObj._id 
+    : String(userObj._id);
+
+  const images = await getUserImages({ page, userId: userIdString });
 
   return (
     <>
@@ -31,7 +43,7 @@ const Profile = async ({ searchParams }: SearchParamProps) => {
               height={50}
               className="size-9 md:size-12"
             />
-            <h2 className="h2-bold text-dark-600">{user.creditBalance}</h2>
+            <h2 className="h2-bold text-dark-600">{userObj.creditBalance}</h2>
           </div>
         </div>
 
